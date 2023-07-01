@@ -5,24 +5,24 @@ import { useEffect, useState } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import logo from "@public/logo.png";
 import placeholder from "@public/avatar-placeholder.jpeg";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
 
 const Navbar = () => {
-	const isLoggedIn = true;
+	const { data: session } = useSession();
 
 	const [providers, setProviders] = useState(null);
 	const [toggleDropdown, setToggleDropdown] = useState(false);
 
 	useEffect(() => {
-		const setProviders = async () => {
+		const setupProviders = async () => {
 			const response = await getProviders();
 			setProviders(response);
 		};
-		setProviders();
+		setupProviders();
 	}, []);
 
 	return (
-		<nav className='flex items-center justify-between w-full px-4 mb-16 shadow-xl border-b-4'>
+		<nav className='flex items-center justify-between w-full px-4 mb-16 '>
 			<Link
 				href='/'
 				className='flex items-center justify-center'>
@@ -33,16 +33,16 @@ const Navbar = () => {
 				/>
 				<p className='hidden sm:block text-xl font-semibold'>Prompt Share</p>
 			</Link>
-			<div className='sm:flex hidden'>
-				{isLoggedIn ? (
+			<div className='sm:flex justify-center items-center hidden'>
+				{session?.user ? (
 					<div className='flex gap-2 md:gap-4'>
 						<Link href='/create-prompt'>
-							<button className='bg-orange-200 p-3 border-2 border-black rounded-full hover:bg-orange-300 shadow'>
+							<button className='p-2 border-2 border-black rounded-full hover:bg-emerald-200 shadow'>
 								Create Prompt
 							</button>
 						</Link>
 						<button
-							className='bg-orange-200 p-3 border-2 flex items-center border-black rounded-full hover:bg-orange-300 shadow'
+							className='p-2 border-2 flex items-center border-black rounded-full hover:bg-emerald-200 shadow'
 							onClick={signOut}>
 							Sign Out
 							<FaSignOutAlt className='inline ml-2' />
@@ -50,11 +50,11 @@ const Navbar = () => {
 
 						<Link href='/profile'>
 							<Image
-								src={placeholder}
+								src={session?.user.image || placeholder}
 								alt='Profile'
 								className='rounded-full shadow'
-								width={50}
-								height={50}
+								width={40}
+								height={40}
 							/>
 						</Link>
 					</div>
@@ -66,18 +66,19 @@ const Navbar = () => {
 									type='button'
 									key={provider.name}
 									onClick={() => signIn(provider.id)}
-									className='bg-orange-200 p-3 border-2 flex items-center border-black rounded-full hover:bg-orange-300 shadow'>
+									className='bg-emerald-100 p-2 border-2 flex items-center border-black rounded-full hover:bg-emerald-100 shadow'>
 									Sign In
+									<FaSignInAlt className='inline ml-2' />
 								</button>
 							))}
 					</>
 				)}
 			</div>
 			<div className='sm:hidden flex relative'>
-				{isLoggedIn ? (
+				{session?.user ? (
 					<div className='flex'>
 						<Image
-							src={placeholder}
+							src={session?.user.image || placeholder}
 							alt='Profile'
 							className='rounded-full shadow cursor-pointer'
 							width={50}
@@ -89,17 +90,17 @@ const Navbar = () => {
 								<Link
 									href='/profile'
 									onClick={() => setToggleDropdown(false)}
-									className='hover:bg-gray-200 p-2 rounded-lg text-sm'>
+									className='hover:bg-emerald-100 p-2 rounded-lg text-sm'>
 									MyProfile
 								</Link>
 								<Link
 									href='/create-prompt'
 									onClick={() => setToggleDropdown(false)}
-									className='hover:bg-gray-200 p-2 rounded-lg text-sm inline'>
+									className='hover:bg-emerald-100 p-2 rounded-lg text-sm inline'>
 									Create Prompt
 								</Link>
 								<button
-									className='bg-black text-gray-200 hover:bg-gray-200 shadow hover:text-black p-2 flex items-center rounded-lg text-sm'
+									className='bg-black text-gray-200 hover:bg-emerald-100 shadow hover:text-black p-2 flex items-center rounded-lg text-sm'
 									onClick={() => {
 										signOut();
 										setToggleDropdown(false);
@@ -118,8 +119,9 @@ const Navbar = () => {
 									type='button'
 									key={provider.name}
 									onClick={() => signIn(provider.id)}
-									className='bg-orange-200 p-3 border-2 flex items-center border-black rounded-full hover:bg-orange-300 shadow'>
+									className='bg-emerald-100 p-2 border-2 flex items-center border-black rounded-full hover:bg-emerald-100 shadow'>
 									Sign In
+									<FaSignInAlt className='inline ml-2' />
 								</button>
 							))}
 					</>
