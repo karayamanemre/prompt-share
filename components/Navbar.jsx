@@ -48,7 +48,7 @@ const Navbar = () => {
 							<FaSignOutAlt className='inline ml-2' />
 						</button>
 
-						<Link href='/profile'>
+						<Link href='/user-profile'>
 							<Image
 								src={session?.user.image || placeholder}
 								alt='Profile'
@@ -88,7 +88,7 @@ const Navbar = () => {
 						{toggleDropdown && (
 							<div className='absolute top-[69px] w-[200px] right-0 bg-gray-100 shadow-lg border-black border-[1px] rounded-xl p-6 flex flex-col gap-2'>
 								<Link
-									href='/profile'
+									href='/user-profile'
 									onClick={() => setToggleDropdown(false)}
 									className='hover:bg-emerald-100 p-2 rounded-lg text-sm'>
 									MyProfile

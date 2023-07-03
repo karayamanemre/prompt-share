@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
-import { FaCheck, FaCopy } from "react-icons/fa";
+import { FaCheck, FaCopy, FaEdit, FaTrash } from "react-icons/fa";
 
 const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 	const { data: session } = useSession();
@@ -16,9 +16,12 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 	const handleProfileClick = () => {
 		console.log(post);
 
-		if (post.creator._id === session?.user.id) return router.push("/profile");
+		if (post.creator._id === session?.user.id)
+			return router.push("/user-profile");
 
-		router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
+		router.push(
+			`/user-profile/${post.creator._id}?name=${post.creator.username}`
+		);
 	};
 
 	const handleCopy = () => {
@@ -72,20 +75,20 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 				))}
 			</div>
 
-			{session?.user.id === post.creator._id && pathName === "/profile" && (
-				<div className='mt-5 flex justify-center items-center gap-4 border-t border-gray-100 pt-3'>
-					<p
-						className='text-sm bg-gradient-to-r from-green-400 to-green-500 bg-clip-text text-transparent cursor-pointer'
-						onClick={handleEdit}>
-						Edit
-					</p>
-					<p
-						className='text-sm bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500 bg-clip-text text-transparent cursor-pointer'
-						onClick={handleDelete}>
-						Delete
-					</p>
-				</div>
-			)}
+			{session?.user.id === post.creator._id &&
+				pathName === "/user-profile" && (
+					<div className='mt-5 flex justify-center items-center gap-4 border-t border-gray-100 pt-3'>
+						<FaEdit
+							onClick={handleEdit}
+							className='cursor-pointer'
+						/>
+
+						<FaTrash
+							onClick={handleDelete}
+							className='cursor-pointer'
+						/>
+					</div>
+				)}
 		</div>
 	);
 };
