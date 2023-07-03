@@ -22,7 +22,7 @@ const Navbar = () => {
 	}, []);
 
 	return (
-		<nav className='flex items-center justify-between w-full px-4 mb-16 '>
+		<nav className='flex items-center justify-between w-full py-2 mb-16 '>
 			<Link
 				href='/'
 				className='flex items-center justify-center'>
@@ -37,12 +37,12 @@ const Navbar = () => {
 				{session?.user ? (
 					<div className='flex gap-2 md:gap-4'>
 						<Link href='/create-prompt'>
-							<button className='p-2 border-2 border-black rounded-full hover:bg-emerald-200 shadow'>
+							<button className='rounded-full border border-black bg-transparent py-1.5 px-5 text-black transition-all hover:bg-black hover:text-white text-center text-sm font-inter flex items-center justify-center'>
 								Create Prompt
 							</button>
 						</Link>
 						<button
-							className='p-2 border-2 flex items-center border-black rounded-full hover:bg-emerald-200 shadow'
+							className='rounded-full border border-black bg-black py-1.5 px-5 text-white transition-all hover:bg-transparent hover:text-black text-center text-sm font-inter flex items-center justify-center'
 							onClick={signOut}>
 							Sign Out
 							<FaSignOutAlt className='inline ml-2' />
@@ -53,8 +53,8 @@ const Navbar = () => {
 								src={session?.user.image || placeholder}
 								alt='Profile'
 								className='rounded-full shadow'
-								width={40}
-								height={40}
+								width={35}
+								height={35}
 							/>
 						</Link>
 					</div>
