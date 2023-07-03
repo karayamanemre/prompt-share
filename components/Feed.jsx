@@ -41,8 +41,7 @@ const Feed = () => {
 		return allPosts.filter(
 			(item) =>
 				regex.test(item.creator.username) ||
-				item.tags.some((tag) => regex.test(tag)) || // Check if any tag matches the regex
-				regex.test(item.prompt)
+				item.tags.some((tag) => regex.test(tag))
 		);
 	};
 
