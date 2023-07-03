@@ -2,11 +2,11 @@ import Link from "next/link";
 
 const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
 	return (
-		<section className='w-full max-w-full flex justify-start items-start flex-col'>
+		<section className='w-full max-w-full flex justify-start items-start flex-col shadow-lg'>
 			<h1 className='text-left mt-5 text-5xl font-extrabold leading-[1.15] text-black sm:text-6xl'>
 				{type} Post
 			</h1>
-			<p className='text-left max-w-md mt-5 text-lg text-gray-600 sm:text-xl max-w-2xl'>
+			<p className='text-left mt-5 text-lg text-gray-600 sm:text-xl max-w-2xl'>
 				{type} and share prompts.
 			</p>
 
@@ -29,9 +29,9 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
 						(#product, #marketing, #fiction, #webdevelopment, etc...)
 					</span>
 					<input
-						value={post.tag}
+						value={post.tags}
 						placeholder='tags, separated, by, commas'
-						onChange={(e) => setPost({ ...post, tag: e.target.value })}
+						onChange={(e) => setPost({ ...post, tags: e.target.value })}
 						className='w-full shadow flex rounded-lg mt-2 p-3 text-sm text-gray-500 outline-0'
 						required
 					/>
@@ -47,7 +47,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
 						type='submit'
 						disabled={submitting}
 						className='text-sm rounded-full p-2 border-[1px] border-black shadow-lg hover:bg-emerald-100'>
-						{submitting ? `${type}ing...` : type}
+						{submitting ? `${type}` : type}
 					</button>
 				</div>
 			</form>
