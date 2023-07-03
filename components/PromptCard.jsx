@@ -14,8 +14,6 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 	const [copied, setCopied] = useState("");
 
 	const handleProfileClick = () => {
-		console.log(post);
-
 		if (post.creator._id === session?.user.id)
 			return router.push("/user-profile");
 
@@ -68,7 +66,7 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 				{post.tags.map((tag, index) => (
 					<p
 						key={index}
-						className='text-sm bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent cursor-pointer'
+						className='text-sm bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent cursor-pointer inline-block m-2 px-2 py-1 rounded'
 						onClick={() => handleTagClick && handleTagClick(tag)}>
 						#{tag}
 					</p>

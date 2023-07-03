@@ -36,12 +36,12 @@ const Feed = () => {
 		fetchPosts();
 	}, []);
 
-	const filterPrompts = (searchtext) => {
-		const regex = new RegExp(searchtext, "i");
+	const filterPrompts = (searchText) => {
+		const regex = new RegExp(searchText, "i");
 		return allPosts.filter(
 			(item) =>
 				regex.test(item.creator.username) ||
-				regex.test(item.tag) ||
+				item.tags.some((tag) => regex.test(tag)) || // Check if any tag matches the regex
 				regex.test(item.prompt)
 		);
 	};
