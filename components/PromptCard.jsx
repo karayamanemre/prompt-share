@@ -31,7 +31,7 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 				setLikes((prevLikes) => [...prevLikes, session?.user.id]);
 				toast.success("Liked!");
 			} else {
-				toast.error("Error liking post!");
+				toast.error("You need to be logged in to like a post!");
 			}
 		} catch (error) {
 			console.error(error);
