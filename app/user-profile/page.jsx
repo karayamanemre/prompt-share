@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Profile from "@components/Profile";
+import ConfirmDialog from "@components/Confirm";
 
 const MyProfile = () => {
 	const { data: session } = useSession();
 	const [posts, setPosts] = useState([]);
+	const [confirmDialog, setConfirmDialog] = useState(null);
 
 	const router = useRouter();
 
@@ -26,30 +28,45 @@ const MyProfile = () => {
 	};
 
 	const handleDelete = async (post) => {
-		const isConfirmed = confirm("Are you sure you want to delete your prompt?");
-		if (isConfirmed) {
-			try {
-				await fetch(`/api/prompt/${post._id.toString()}`, {
-					method: "DELETE",
-				});
+		setConfirmDialog({
+			title: "Delete Prompt",
+			message: "Are you sure you want to delete your prompt?",
+			onConfirm: async () => {
+				try {
+					await fetch(`/api/prompt/${post._id.toString()}`, {
+						method: "DELETE",
+					});
 
-				const filteredPosts = posts.filter((p) => p._id !== post._id);
+					const filteredPosts = posts.filter((p) => p._id !== post._id);
 
-				setPosts(filteredPosts);
-			} catch (error) {
-				console.error(error);
-			}
-		}
+					setPosts(filteredPosts);
+				} catch (error) {
+					console.error(error);
+				}
+				setConfirmDialog(null);
+			},
+			onCancel: () => setConfirmDialog(null),
+		});
 	};
 
 	return (
-		<Profile
-			name='My'
-			desc='Your personalized profile page'
-			data={posts}
-			handleEdit={handleEdit}
-			handleDelete={handleDelete}
-		/>
+		<>
+			<Profile
+				name='My'
+				desc='Your personalized profile page'
+				data={posts}
+				handleEdit={handleEdit}
+				handleDelete={handleDelete}
+			/>
+			{confirmDialog && (
+				<ConfirmDialog
+					title={confirmDialog.title}
+					message={confirmDialog.message}
+					onConfirm={confirmDialog.onConfirm}
+					onCancel={confirmDialog.onCancel}
+				/>
+			)}
+		</>
 	);
 };
 

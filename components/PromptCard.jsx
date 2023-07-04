@@ -4,7 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
-import { FaCheck, FaCopy, FaEdit, FaTrash } from "react-icons/fa";
+import { FaCheck, FaCopy, FaEdit, FaTrash, FaHeart } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 	const { data: session } = useSession();
@@ -12,6 +13,51 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 	const router = useRouter();
 
 	const [copied, setCopied] = useState("");
+
+	const [liked, setLiked] = useState(post.likes.includes(session?.user.id));
+
+	const [likes, setLikes] = useState(post.likes);
+
+	const handleLike = async () => {
+		try {
+			const response = await fetch(`/api/prompt/${post._id}/like`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ userId: session?.user.id }),
+			});
+
+			if (response.ok) {
+				setLiked(true);
+				setLikes((prevLikes) => [...prevLikes, session?.user.id]);
+				toast.success("Liked!");
+			} else {
+				toast.error("Error liking post!");
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const handleUnlike = async () => {
+		try {
+			const response = await fetch(`/api/prompt/${post._id}/like`, {
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ userId: session?.user.id }),
+			});
+
+			if (response.ok) {
+				setLiked(false);
+				const updatedPost = await response.json();
+				setLikes(updatedPost.likes);
+				toast.info("Unliked!");
+			} else {
+				toast.error("Error unliking post!");
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	const handleProfileClick = () => {
 		if (post.creator._id === session?.user.id)
@@ -25,12 +71,13 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 	const handleCopy = () => {
 		setCopied(post.prompt);
 		navigator.clipboard.writeText(post.prompt);
+		toast.success("Copied to clipboard!");
 		setTimeout(() => setCopied(false), 3000);
 	};
 
 	return (
 		<div className='flex-1 break-inside-avoid rounded-lg border border-gray-300 bg-white/20 bg-clip-padding p-6 pb-4 backdrop-blur-lg backdrop-filter md:w-[360px] w-full h-fit'>
-			<div className='flex justify-between items-start gap-5'>
+			<div className='flex justify-between items-start gap-2'>
 				<div
 					className='flex-1 flex justify-start items-center gap-3 cursor-pointer'
 					onClick={handleProfileClick}>
@@ -49,16 +96,6 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 						<p className='text-sm text-gray-500'>{post.creator.email}</p>
 					</div>
 				</div>
-
-				<div
-					className='w-7 h-7 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur flex justify-center items-center cursor-pointer'
-					onClick={handleCopy}>
-					{copied === post.prompt ? (
-						<FaCheck size={12} />
-					) : (
-						<FaCopy size={12} />
-					)}
-				</div>
 			</div>
 
 			<p className='my-4 text-sm text-gray-700'>{post.prompt}</p>
@@ -72,7 +109,30 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 					</p>
 				))}
 			</div>
+			<div className='flex gap-2'>
+				<div
+					className='w-10 h-10 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur flex justify-center items-center cursor-pointer'
+					onClick={handleCopy}>
+					{copied === post.prompt ? (
+						<FaCheck size={12} />
+					) : (
+						<FaCopy size={12} />
+					)}
+				</div>
 
+				<div
+					className='w-10 h-10 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur flex justify-center items-center cursor-pointer'
+					onClick={liked ? handleUnlike : handleLike}>
+					<FaHeart
+						className={
+							liked
+								? "text-red-500 cursor-pointer"
+								: "text-gray-500 cursor-pointer"
+						}
+					/>
+					<span className='ml-1 text-sm'>{likes.length}</span>
+				</div>
+			</div>
 			{session?.user.id === post.creator._id &&
 				pathName === "/user-profile" && (
 					<div className='mt-5 flex justify-center items-center gap-4 border-t border-gray-100 pt-3'>

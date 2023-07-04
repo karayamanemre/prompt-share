@@ -1,6 +1,8 @@
 import Navbar from "@components/Navbar";
 import Provider from "@components/Provider";
 import "@styles/globals.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata = {
 	title: "Prompt Share",
@@ -16,6 +18,7 @@ export default function RootLayout({ children }) {
 						<Navbar />
 						{children}
 					</main>
+					<ToastContainer autoClose={3000} />
 				</Provider>
 			</body>
 		</html>
